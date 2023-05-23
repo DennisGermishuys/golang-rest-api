@@ -1,4 +1,4 @@
-module test-post
+module golang-rest-server
 
 go 1.20
 
