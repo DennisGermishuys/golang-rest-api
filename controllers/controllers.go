@@ -85,7 +85,4 @@ func HandleAdd(c *gin.Context) {
 	Tasks = append(Tasks, data)
 
 	c.JSON(http.StatusOK, Tasks)
-	fmt.Print(Tasks)
-
-
 }
