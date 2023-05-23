@@ -38,7 +38,7 @@ func HandleDelete(c *gin.Context) {
 func HandleGet(c *gin.Context) {
 
 	//TODO
-	// Read data freom db.json file instead of the struct for api
+	// Read data from db.json file instead of the struct for api
 
 	file, err := ioutil.ReadFile("db.json")
 	if err != nil{
