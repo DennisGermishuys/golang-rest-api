@@ -81,8 +81,6 @@ func HandleAdd(c *gin.Context) {
 	}
 
 	data.ID = structId
-
 	Tasks = append(Tasks, data)
-
 	c.JSON(http.StatusOK, Tasks)
 }
