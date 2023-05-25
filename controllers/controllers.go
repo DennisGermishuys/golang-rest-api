@@ -16,6 +16,9 @@ type Task struct {
     Reminder bool `json:"reminder"`
 }
 
+
+//TODO
+//Remove when done with testing
 var Tasks = []Task{
 		{ID: "1", Text: "Doctors Appointment", Date: "25 May 2023", Reminder: true},
 		{ID: "2", Text: "Go to the gym", Date: "28 June 2023", Reminder: true},
@@ -37,16 +40,16 @@ func HandleDelete(c *gin.Context) {
 
 func HandleGet(c *gin.Context) {
 
+	collection := c.Param("collection")
+	var jsonData map[string]interface{}
+
 	//TODO
-	// Read data from db.json file instead of the struct for api
+	// will need error handling if collection does not exist in file
 
 	file, err := ioutil.ReadFile("db.json")
 	if err != nil{
-
-		fmt.Print(err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Please create a db.json file at the project route"})
 	}
-
-	var jsonData map[string]interface{}
 
 	err = json.Unmarshal(file, &jsonData)
 	if err != nil{
@@ -54,8 +57,7 @@ func HandleGet(c *gin.Context) {
 		fmt.Print(err)
 	}
 
-	fmt.Println(jsonData)
-	c.JSON(http.StatusOK, Tasks)
+	c.JSON(http.StatusOK, jsonData[collection])
 }
 
 func HandleUpdate(c *gin.Context) {

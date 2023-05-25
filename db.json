@@ -12,5 +12,20 @@
 			"day" : "blah",
 			"reminder" : true
 		}
+	],
+	"tests" : [
+{
+			"id" : 1,
+			"text" : "other route",
+			"day" : "222",
+			"reminder" : false
+		},
+		{
+			"id" : 2,
+			"text" : "other route 2nd object",
+			"day" : "some random day",
+			"reminder" : true
+		}
+
 	]
 }
