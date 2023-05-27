@@ -15,7 +15,7 @@ func main() {
 	router.Use(middlewares.CORSMiddleware())
 
 	router.GET("/:collection", controllers.HandleGet)
-	router.PUT("/tasks/:id", controllers.HandleUpdate)
+	router.PUT("/:collection/:id", controllers.HandleUpdate)
 	router.POST("/tasks", controllers.HandleAdd)
 	router.DELETE("/tasks/:id", controllers.HandleDelete)
 

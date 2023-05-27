@@ -1,11 +1,14 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
+	"os"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -61,14 +64,55 @@ func HandleGet(c *gin.Context) {
 }
 
 func HandleUpdate(c *gin.Context) {
+	var jsonData map[string]interface{}
+	var itemToUpdate map[string]interface{}
 
+	// Grab query params
+	collection := c.Param("collection")
 	id := c.Param("id")
 
-	for i, task := range Tasks {
-		if task.ID == id {
-			Tasks[i].Reminder = !Tasks[i].Reminder
-			c.JSON(http.StatusOK, Tasks)
+	file, err := ioutil.ReadFile("db.json")
+	if err != nil{
+		c.JSON(http.StatusNotFound, gin.H{"error": "Please create a db.json file at the project route"})
+		return
+	}
+
+	err = json.Unmarshal(file, &jsonData)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error parsing JSON data"})
+		return
+	}	
+
+	collectionData, ok := jsonData[collection].([]interface{})
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Collection not found. Please ensure that it is inside of db.json"})
+		return
+	}
+
+	for _, field := range collectionData {
+		fieldMap, ok := field.(map[string]interface{})
+		if !ok {
+			continue
 		}
+
+		if fieldItemID, idOk := fieldMap["id"].(float64); idOk && strconv.Itoa(int(fieldItemID)) == id {
+			itemToUpdate = fieldMap
+			break
+		}
+	}
+
+	if itemToUpdate != nil {
+		currentValue := itemToUpdate["reminder"].(bool)
+		itemToUpdate["reminder"] = !currentValue
+
+		updatedData, err := json.Marshal(jsonData)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		err = ioutil.WriteFile("db.json", updatedData, os.ModePerm)
+		c.JSON(http.StatusOK, gin.H{"message": "Successfully written to file"})
 	}
 }
 
